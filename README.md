@@ -2,10 +2,27 @@
 
 **Eslogan:** "El apañe que necesitas, al toque."
 
-## 📖 Descripción General
-ApañaUC es una plataforma de **economía colaborativa académica** diseñada para estudiantes universitarios. No es solo una app de tutorías; es un ecosistema gamificado donde el conocimiento es la moneda de cambio.
+---
 
-La app conecta a estudiantes que necesitan ayuda inmediata ("requesters") con compañeros dispuestos a ayudar ("helpers") a cambio de **Karma Points**, los cuales pueden ser canjeados por beneficios reales (café, impresiones, entradas, etc.).
+## 🦈 El Pitch (La Visión)
+
+> **"La universidad tiene un problema de logística invisible: Hay miles de cerebros brillantes, pero están desconectados. Tenemos una oferta de ayuda masiva y una demanda de ayuda masiva, pero no hacen 'match' en tiempo real."**
+
+Nosotros somos **Apaña!**, una plataforma de economía colaborativa on-demand que resuelve esto con tres innovaciones que nadie más tiene:
+
+1.  ⚡ **Inmediatez:** Reducimos el tiempo de ayuda de 3 días (correo a profesor) a **5 minutos** (peer-to-peer).
+2.  🤝 **Romper Silos:** Nuestro algoritmo paga un **bono extra** si un Ingeniero cruza el campus para ayudar a un Humanista.
+3.  ☕ **Economía Circular:** Transformamos capital intelectual en bienestar físico. **Tu conocimiento paga tu almuerzo.**
+
+### 📍 El "Waze" del Conocimiento
+Hemos creado una app que funciona como un **Waze del conocimiento dentro del campus**. Conectamos al que tiene la duda con el que tiene la respuesta en menos de 5 minutos, y recompensamos esa ayuda con café real en el casino.
+
+**"Porque nadie debería reprobar por vergüenza a preguntar."**
+
+---
+
+## 📖 Descripción Técnica General
+ApañaUC es un ecosistema gamificado donde el conocimiento es la moneda de cambio. La app conecta a estudiantes que necesitan ayuda inmediata ("requesters") con compañeros dispuestos a ayudar ("helpers") a cambio de **Karma Points**, los cuales pueden ser canjeados por beneficios reales.
 
 ---
 
