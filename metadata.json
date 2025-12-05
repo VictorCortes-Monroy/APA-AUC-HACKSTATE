@@ -1,0 +1,7 @@
+{
+  "name": "ApañaUC",
+  "description": "El apañe que necesitas, al toque. Plataforma solidaria de micro-tutorías universitarias.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
