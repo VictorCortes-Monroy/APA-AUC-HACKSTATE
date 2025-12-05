@@ -9,10 +9,25 @@ La app conecta a estudiantes que necesitan ayuda inmediata ("requesters") con co
 
 ---
 
+## 🗺️ Integración de Mapas Vivos (Nuevo)
+El sistema utiliza una arquitectura híbrida para el **Radar del Campus**:
+
+1.  **Geometría Vectorial (Local):** SVG optimizados para renderizado rápido de las zonas del campus (San Joaquín).
+2.  **Metadatos Externos (API):** Conexión en tiempo real con el repositorio [uc-maps-seeds](https://github.com/almapp/uc-maps-seeds) para obtener nombres oficiales, coordenadas precisas y metadatos de los edificios.
+3.  **Fusión de Datos (Hot Zones):** El frontend cruza la información de:
+    *   *Geometría* (¿Dónde dibujo el edificio?)
+    *   *Datos Externos* (¿Cómo se llama realmente el edificio?)
+    *   *Firebase* (¿Cuántas solicitudes hay ahí?)
+    
+    Esto permite generar mapas de calor ("Hot Zones") dinámicos que vibran y cambian de color según la demanda académica en tiempo real.
+
+---
+
 ## 📱 Módulos y Funcionalidades
 
 ### 1. Radar (Feed Principal)
-*   **Vista de Mapa:** Visualización geoespacial de solicitudes de ayuda en el campus (ej. Biblioteca, Cafetería).
+*   **Vista de Mapa:** Visualización geoespacial de solicitudes de ayuda.
+    *   *Sincronización:* Se conecta a `almapp.github.io` para validar ubicaciones.
     *   *Hot Zones:* Indicadores visuales (fuego) cuando hay mucha demanda en una zona.
 *   **Vista de Lista:** Tarjetas detalladas de las solicitudes con filtros por etiquetas y ubicación.
 *   **Filtros Inteligentes:** Filtrado por ubicación específica o etiquetas académicas.
@@ -58,9 +73,5 @@ El pago final al ayudante se compone de:
 ## 🛠 Tech Stack
 *   **Frontend:** React 19, Tailwind CSS, Lucide React.
 *   **AI:** Google Gemini API (Multimodal: Texto, Tags, Resumen).
+*   **Data:** Integration w/ almapp/uc-maps-seeds.
 *   **Arquitectura:** Single Page Application (SPA).
-*   **Mock Data:** Actualmente utiliza datos simulados en memoria para demostración.
-
-## 🛡 Moderación y Seguridad
-*   Filtro de palabras clave para prevenir transacciones ilegales o contenido no académico.
-*   Validación de saldo antes de publicar solicitudes.
