@@ -15,7 +15,7 @@ const CURRENT_USER: User = {
   id: 'u1',
   name: 'Alex Rivera',
   avatar: 'https://picsum.photos/200/300',
-  karma: 120,
+  karma: 250, // Started with a bit more for demo purposes
   skills: ['Python', 'Inglés', 'Edición Video'],
   interests: ['Cálculo I', 'Historia'],
   major: 'Ingeniería Informática',
@@ -44,7 +44,8 @@ const INITIAL_REQUESTS: HelpRequest[] = [
     topic: 'Física I',
     description: 'Necesito ayuda con los diagramas de cuerpo libre para una escultura móvil.',
     location: 'Biblioteca - Piso 2',
-    offer: '15 min Karma',
+    offer: '50 Pts',
+    karmaValue: 50,
     status: RequestStatus.PENDING,
     timestamp: Date.now() - 120000,
     tags: ['Física', 'Mecánica', 'Escultura']
@@ -59,7 +60,8 @@ const INITIAL_REQUESTS: HelpRequest[] = [
     topic: 'Estadística',
     description: 'Alguien sabe usar R Studio para una regresión?',
     location: 'Cafetería Central',
-    offer: 'Un Café',
+    offer: '20 Pts',
+    karmaValue: 20,
     status: RequestStatus.PENDING,
     timestamp: Date.now() - 600000,
     tags: ['R', 'Estadística']
@@ -74,7 +76,8 @@ const INITIAL_REQUESTS: HelpRequest[] = [
     topic: 'Ensayo Ética',
     description: 'Revisión rápida de argumentos para mi ensayo.',
     location: 'Biblioteca - Piso 2', 
-    offer: '15 min Karma',
+    offer: '20 Pts',
+    karmaValue: 20,
     status: RequestStatus.PENDING,
     timestamp: Date.now() - 1800000,
     tags: ['Escritura', 'Ética']
@@ -89,7 +92,8 @@ const INITIAL_REQUESTS: HelpRequest[] = [
     topic: 'Maqueta 3D',
     description: 'Ayuda cortando cartón pluma, no termino!',
     location: 'Biblioteca - Piso 2',
-    offer: 'Un Café',
+    offer: '15 Pts',
+    karmaValue: 15,
     status: RequestStatus.PENDING,
     timestamp: Date.now() - 50000,
     tags: ['Maquetas']
@@ -104,7 +108,8 @@ const INITIAL_REQUESTS: HelpRequest[] = [
     topic: 'Bioquímica',
     description: 'Ciclo de Krebs, auxilio. Necesito mnemotecnias.',
     location: 'Biblioteca - Piso 2',
-    offer: '15 min Karma',
+    offer: '50 Pts',
+    karmaValue: 50,
     status: RequestStatus.PENDING,
     timestamp: Date.now() - 100000,
     tags: ['Biología', 'Química']
@@ -125,7 +130,13 @@ const App: React.FC = () => {
   const availableTags = Array.from(new Set(requests.flatMap(r => r.tags))).sort();
 
   // Handle Creating a Request
-  const handleCreateRequest = (data: { description: string; location: string; offer: string; tags: string[]; topic: string; preferredMajor: string }) => {
+  const handleCreateRequest = (data: { description: string; location: string; offer: string; karmaValue: number; tags: string[]; topic: string; preferredMajor: string }) => {
+    // 1. Deduct Karma immediately (Pre-payment/Escrow)
+    setUser(prev => ({
+        ...prev,
+        karma: prev.karma - data.karmaValue
+    }));
+
     const newRequest: HelpRequest = {
       id: Date.now().toString(),
       requesterId: user.id,
@@ -137,6 +148,7 @@ const App: React.FC = () => {
       description: data.description,
       location: data.location,
       offer: data.offer,
+      karmaValue: data.karmaValue,
       status: RequestStatus.PENDING,
       timestamp: Date.now(),
       tags: data.tags
@@ -160,16 +172,27 @@ const App: React.FC = () => {
   // Handle Completing a Session
   const handleCompleteSession = (extraBonus: number = 0) => {
     if (activeRequest) {
-      // Calculate reward logic locally for instant feedback updates
-      const reward = calculateRewards(activeRequest.requesterMajor, user.major);
-      const totalPoints = reward.points + extraBonus;
-      
-      setUser(prev => ({ 
-          ...prev, 
-          karma: prev.karma + totalPoints,
-          currentXp: prev.currentXp + totalPoints, // Add XP too
-          totalHelps: prev.totalHelps + 1
-      }));
+      // Logic for when I am the Helper (I get paid the escrow + bonus)
+      const isHelper = activeRequest.helperId === user.id;
+
+      if (isHelper) {
+          const reward = calculateRewards(activeRequest.requesterMajor, user.major, activeRequest.karmaValue);
+          const totalPoints = reward.points + extraBonus;
+          
+          setUser(prev => ({ 
+              ...prev, 
+              karma: prev.karma + totalPoints,
+              currentXp: prev.currentXp + totalPoints, 
+              totalHelps: prev.totalHelps + 1
+          }));
+      } else {
+          // If I was the requester, I already paid. I might get a small XP bump for using the platform.
+           setUser(prev => ({ 
+              ...prev, 
+              currentXp: prev.currentXp + 10, 
+          }));
+      }
+
       setActiveRequest(null);
       setActiveTab('feed');
       // Remove completed request from feed
@@ -373,6 +396,7 @@ const App: React.FC = () => {
         isOpen={isModalOpen} 
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleCreateRequest}
+        userKarma={user.karma}
       />
     </>
   );

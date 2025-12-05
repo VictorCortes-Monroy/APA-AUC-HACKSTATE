@@ -25,7 +25,7 @@ const ActiveMatch: React.FC<ActiveMatchProps> = ({ request, currentUser, onCompl
   const [knowledgeData, setKnowledgeData] = useState<KnowledgeSnippet | null>(null);
   
   const [isCompleting, setIsCompleting] = useState(false);
-  const [rewardData, setRewardData] = useState<{points: number, isBonus: boolean, message: string} | null>(null);
+  const [rewardData, setRewardData] = useState<{points: number, isBonus: boolean, message: string, breakdown: { base: number, bonus: number }} | null>(null);
 
   const isRequester = request.requesterId === currentUser.id;
   const otherPersonName = isRequester ? 'Ayudante' : request.requesterName;
@@ -39,7 +39,7 @@ const ActiveMatch: React.FC<ActiveMatchProps> = ({ request, currentUser, onCompl
         {
           id: 'sys-1',
           senderId: 'system',
-          text: `¡Match exitoso! Reúnanse en: ${request.location}`,
+          text: `¡Match exitoso! Reúnanse en: ${request.location}. Incentivo: ${request.karmaValue} Pts.`,
           timestamp: Date.now() - 10000
         },
         {
@@ -86,8 +86,8 @@ const ActiveMatch: React.FC<ActiveMatchProps> = ({ request, currentUser, onCompl
   const handleFinalize = (withAiBonus: boolean) => {
     setShowKnowledgeModal(false);
     
-    // Calculate rewards
-    const rewards = calculateRewards(request.requesterMajor, currentUser.major);
+    // Calculate rewards using the financial base value from the request
+    const rewards = calculateRewards(request.requesterMajor, currentUser.major, request.karmaValue);
     setRewardData(rewards);
 
     setIsCompleting(true);
@@ -116,17 +116,27 @@ const ActiveMatch: React.FC<ActiveMatchProps> = ({ request, currentUser, onCompl
         
         {/* Breakdown */}
         <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-8 w-full max-w-xs space-y-2">
+             {/* Financial Base */}
             <div className="flex justify-between text-sm text-slate-600">
-                <span>Base + Bonus Fac.</span>
-                <span className="font-bold">+{rewardData.points}</span>
+                <span>Abono Base</span>
+                <span className="font-bold">+{rewardData.breakdown.base}</span>
             </div>
+             {/* System Bonuses */}
+             {rewardData.breakdown.bonus > 0 && (
+                <div className="flex justify-between text-sm text-amber-600">
+                    <span>Bono Interdisciplinario</span>
+                    <span className="font-bold">+{rewardData.breakdown.bonus}</span>
+                </div>
+             )}
+            
+            {/* AI Bonus */}
             {aiBonus > 0 && (
-                <div className="flex justify-between text-sm text-indigo-600 bg-indigo-50 p-2 rounded-lg border border-indigo-100">
+                <div className="flex justify-between text-sm text-indigo-600 bg-indigo-50 p-2 rounded-lg border border-indigo-100 mt-1">
                     <span className="flex items-center gap-1"><BrainCircuit className="w-3 h-3"/> Cerebro Colectivo</span>
                     <span className="font-bold">+{aiBonus}</span>
                 </div>
             )}
-            <div className="border-t border-slate-200 pt-2 text-xs text-slate-400">
+            <div className="border-t border-slate-200 pt-2 text-xs text-slate-400 mt-2">
                 {rewardData.message}
             </div>
         </div>
@@ -228,7 +238,12 @@ const ActiveMatch: React.FC<ActiveMatchProps> = ({ request, currentUser, onCompl
           </div>
           <div>
             <h3 className="font-bold text-slate-900">{otherPersonName}</h3>
-            <p className="text-xs text-slate-500">{request.topic}</p>
+            <div className="flex items-center gap-2">
+                 <p className="text-xs text-slate-500">{request.topic}</p>
+                 <span className="text-[10px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded font-bold border border-amber-200">
+                    Garantía: {request.karmaValue} Pts
+                 </span>
+            </div>
           </div>
         </div>
         <button className="p-2 bg-slate-50 rounded-full text-indigo-600">

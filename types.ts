@@ -39,7 +39,8 @@ export interface HelpRequest {
   topic: string; 
   description: string;
   location: string; 
-  offer: string; 
+  offer: string; // Display text (e.g. "Un Café")
+  karmaValue: number; // Numeric value for transactions
   status: RequestStatus;
   timestamp: number;
   tags: string[];
